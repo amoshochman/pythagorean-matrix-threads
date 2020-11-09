@@ -1,5 +1,5 @@
 # pythagorean-matrix-threads
-### Multi-threaded app that calculates euclidean distances for a list of points.
+### A multi-threaded app that calculates euclidean distances for a list of points.
 
 Given a list of points p1, ..., pn and a number of threads T, it calculates a squared matrix M of size n where M[i, j] is the distance between points i and j,
 using for that calculation T threads.
