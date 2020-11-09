@@ -11,14 +11,14 @@ import java.util.Random;
 public class DistanceCalculator extends Thread {
 
 	/*
-	 * Each Thread has a ArrayList of the pairs of coordinates that it should calculate.
+	 * Each Thread has a ArrayList of the pairs of coordinates that it should
+	 * calculate.
 	 */
 	private ArrayList<int[]> threadCells;
 
 	/*
-	 * "points" are pairs of integers.
-	 * "matrix" are the distances.
-	 * "curRow, curCol" is the position to assign to the next thread. 
+	 * "points" are pairs of integers. "matrix" are the distances. "curRow, curCol"
+	 * is the position to assign to the next thread.
 	 */
 	private static Point[] points;
 	private static double[][] matrix;
@@ -26,7 +26,7 @@ public class DistanceCalculator extends Thread {
 	private static int curRow;
 	private static int curCol;
 	private static int threadsNum;
-	private static String inputErrorString = "Provided input should be an odd number of integers.";
+	private static String inputErrorString = "Provided input should be an odd number of integers bigger or equal than 3.";
 
 	public DistanceCalculator() {
 		threadCells = new ArrayList<int[]>();
@@ -86,11 +86,16 @@ public class DistanceCalculator extends Thread {
 	}
 
 	/*
-	 * Calculates the distances matrix using similar amount of load among the threads.
+	 * Calculates the distances matrix using similar amount of load among the
+	 * threads.
 	 */
 	public static void setMatrix() {
 
 		matrix = new double[n][n];
+
+		if (n == 1) {
+			return;
+		}
 
 		DistanceCalculator[] calculators = new DistanceCalculator[threadsNum];
 
@@ -124,22 +129,22 @@ public class DistanceCalculator extends Thread {
 	}
 
 	/*
-	 * Throws an exception if one of the distances calculated doesn't agree with the Math.sqrt one.
+	 * Throws an exception if one of the distances calculated doesn't agree with the
+	 * Math.sqrt one.
 	 */
 	public static void test() throws Exception {
-		for (int i=0;i<n;i++) {
-			for (int j=0;j<n;j++) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
 				double dist1 = matrix[i][j];
 				double deltaX = points[i].getX() - points[j].getX();
 				double deltaY = points[i].getY() - points[j].getY();
 				double dist2 = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 				if (Math.abs(dist1 - dist2) > 0.01) {
-					throw new Exception("error in distance calculation in cell: [" + i + "," + j +"]");
+					throw new Exception("error in distance calculation in cell: [" + i + "," + j + "]");
 				}
 			}
 		}
 	}
-	
 
 	private static ArrayList<int[]> getRandomPoints(int pointsNumber) {
 		Random rand = new Random();
@@ -167,7 +172,7 @@ public class DistanceCalculator extends Thread {
 		}
 		System.out.println();
 	}
-	
+
 	private static void processAndPrint(ArrayList<int[]> pointsArray, int threadsNum) throws Exception {
 		setThreadsNum(threadsNum);
 		setPoints(pointsArray);
@@ -176,32 +181,27 @@ public class DistanceCalculator extends Thread {
 		printMatrix();
 		test();
 	}
-	 
 
 	public static void main(String[] args) throws Exception {
-		// a sanity check using random numbers
-		
-		System.out.println("<<-----Random Values----->>");
-		processAndPrint(getRandomPoints(3), 2);
-		
+
 		if (args.length == 0) {
+			// a sanity check using random numbers
+			System.out.println("<<-----Random Values----->>");
+			processAndPrint(getRandomPoints(3), 2);
 			return;
 		}
-		
-		System.out.println();
-		
+
 		System.out.println("<<-----Provided Values----->>");
 
 		ArrayList<int[]> pointsArray = new ArrayList();
-		if (args.length % 2 == 0) {
+		if (args.length % 2 == 0 || args.length == 1) {
 			throw new Exception(inputErrorString);
 		}
 		int[] int_args = new int[args.length];
 		for (int i = 0; i < args.length; i++) {
 			try {
 				int_args[i] = Integer.parseInt(args[i]);
-			}
-			catch(Exception e) {
+			} catch (Exception e) {
 				throw new Exception(inputErrorString);
 			}
 		}
@@ -211,7 +211,7 @@ public class DistanceCalculator extends Thread {
 			int[] pointArr = { x, y };
 			pointsArray.add(pointArr);
 		}
-		processAndPrint(pointsArray, int_args[args.length-1]);
+		processAndPrint(pointsArray, int_args[args.length - 1]);
 
 	}
 
